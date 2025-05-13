@@ -1,5 +1,9 @@
 package com.kesherManager.kesherManager.model;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import util.Dates;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -72,9 +76,21 @@ public class Transport {
         this.destinationType = destinationType;
         this.scheduledDate = scheduledDate;
         this.status = TransportStatus.PLANNED;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
     }
+
+    // Add constructor that accepts Joda LocalDate
+    public Transport(Box sourceBox, DestinationType destinationType, LocalDate scheduledLocalDate) {
+        this.sourceBox = sourceBox;
+        this.destinationType = destinationType;
+        this.scheduledDate = Dates.atUtc(scheduledLocalDate);
+        this.status = TransportStatus.PLANNED;
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
+    }
+
+
 
     // Getters and Setters
 
@@ -192,20 +208,47 @@ public class Transport {
 
     // Lifecycle methods
 
+    public void setScheduledDate(LocalDate scheduledLocalDate) {
+        this.scheduledDate = Dates.atUtc(scheduledLocalDate);
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledLocalDateTime) {
+        this.scheduledDate = Dates.atUtc(scheduledLocalDateTime);
+    }
+
+    public void setCompletionDate(LocalDate completionLocalDate) {
+        this.completionDate = Dates.atUtc(completionLocalDate);
+    }
+
+    public void setCompletionDate(LocalDateTime completionLocalDateTime) {
+        this.completionDate = Dates.atUtc(completionLocalDateTime);
+    }
+
+    // Update lifecycle methods
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+        createdAt = Dates.nowUTC();
+        updatedAt = Dates.nowUTC();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new Date();
+        updatedAt = Dates.nowUTC();
     }
 
-    // Helper methods
-
+    // Update helper methods
     public boolean isCompleted() {
         return status == TransportStatus.COMPLETED;
+    }
+
+    // Add extra helper for date check
+    public boolean isScheduledForToday() {
+        if (scheduledDate == null) return false;
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime scheduledLocalDateTime = Dates.atLocalTime(scheduledDate);
+
+        return scheduledLocalDateTime != null &&
+                scheduledLocalDateTime.toLocalDate().equals(today);
     }
 }

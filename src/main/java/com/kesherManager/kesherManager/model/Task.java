@@ -1,5 +1,9 @@
 package com.kesherManager.kesherManager.model;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import util.Dates;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -69,10 +73,20 @@ public class Task {
         this.dueDate = dueDate;
         this.priority = priority;
         this.status = TaskStatus.PENDING;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
     }
 
+    // Add constructor that accepts Joda LocalDate
+    public Task(TaskType taskType, String description, LocalDate dueDateLocal, TaskPriority priority) {
+        this.taskType = taskType;
+        this.description = description;
+        this.dueDate = Dates.atUtc(dueDateLocal);
+        this.priority = priority;
+        this.status = TaskStatus.PENDING;
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
+    }
     // Getters and Setters
 
     public Long getId() {
@@ -171,26 +185,50 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    // Lifecycle methods
+    public void setDueDate(LocalDate dueDateLocal) {
+        this.dueDate = Dates.atUtc(dueDateLocal);
+    }
 
+    public void setDueDate(LocalDateTime dueDateLocalTime) {
+        this.dueDate = Dates.atUtc(dueDateLocalTime);
+    }
+
+    public LocalDate getDueDateLocal() {
+        if (dueDate == null) return null;
+        LocalDateTime dateTime = Dates.atLocalTime(dueDate);
+        return dateTime != null ? dateTime.toLocalDate() : null;
+    }
+
+    // Update lifecycle methods
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+        createdAt = Dates.nowUTC();
+        updatedAt = Dates.nowUTC();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new Date();
+        updatedAt = Dates.nowUTC();
     }
 
-    // Helper methods
-
+    // Update helper methods
     public boolean isOverdue() {
-        return dueDate != null && dueDate.before(new Date()) && status != TaskStatus.COMPLETED;
+        return dueDate != null && dueDate.before(Dates.nowUTC()) && status != TaskStatus.COMPLETED;
     }
 
     public boolean isCompleted() {
         return status == TaskStatus.COMPLETED;
     }
+
+    // Add helper for date check
+    public boolean isDueToday() {
+        if (dueDate == null) return false;
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime dueLocalDateTime = Dates.atLocalTime(dueDate);
+
+        return dueLocalDateTime != null &&
+                dueLocalDateTime.toLocalDate().equals(today);
+    }
+
 }

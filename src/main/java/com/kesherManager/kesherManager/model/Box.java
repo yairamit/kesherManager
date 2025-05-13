@@ -1,5 +1,7 @@
 package com.kesherManager.kesherManager.model;
 
+import util.Dates;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -56,11 +58,13 @@ public class Box {
         this.locationName = locationName;
         this.address = address;
         this.status = BoxStatus.ACTIVE;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
     }
 
+
     // Getters and Setters
+
 
     public Long getId() {
         return id;
@@ -150,16 +154,16 @@ public class Box {
         this.updatedAt = updatedAt;
     }
 
-    // Lifecycle methods
-
+    // Update lifecycle methods
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+        createdAt = Dates.nowUTC();
+        updatedAt = Dates.nowUTC();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new Date();
+        updatedAt = Dates.nowUTC();
     }
+
 }
