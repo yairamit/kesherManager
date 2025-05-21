@@ -19,6 +19,14 @@ public class Box {
     @NotBlank(message = "Location name cannot be empty")
     private String locationName;
 
+    private String responsiblePerson;
+
+    private String responsiblePersonPhone;
+
+    private String associationManager;
+
+    private String donationGroup;
+
     private String address;
 
     private Double latitude;
@@ -50,13 +58,26 @@ public class Box {
     }
 
     // Constructors
-
     public Box() {
     }
 
     public Box(String locationName, String address) {
         this.locationName = locationName;
         this.address = address;
+        this.status = BoxStatus.ACTIVE;
+        this.createdAt = Dates.nowUTC();
+        this.updatedAt = Dates.nowUTC();
+    }
+
+    // Updated constructor with new fields
+    public Box(String locationName, String address, String responsiblePerson,
+               String responsiblePersonPhone, String associationManager, String donationGroup) {
+        this.locationName = locationName;
+        this.address = address;
+        this.responsiblePerson = responsiblePerson;
+        this.responsiblePersonPhone = responsiblePersonPhone;
+        this.associationManager = associationManager;
+        this.donationGroup = donationGroup;
         this.status = BoxStatus.ACTIVE;
         this.createdAt = Dates.nowUTC();
         this.updatedAt = Dates.nowUTC();
@@ -153,6 +174,55 @@ public class Box {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public String getResponsiblePerson() {
+        return responsiblePerson;
+    }
+
+    public void setResponsiblePerson(String responsiblePerson) {
+        this.responsiblePerson = responsiblePerson;
+    }
+
+    public String getResponsiblePersonPhone() {
+        return responsiblePersonPhone;
+    }
+
+    public void setResponsiblePersonPhone(String responsiblePersonPhone) {
+        this.responsiblePersonPhone = responsiblePersonPhone;
+    }
+
+    public String getAssociationManager() {
+        return associationManager;
+    }
+
+    public void setAssociationManager(String associationManager) {
+        this.associationManager = associationManager;
+    }
+
+    public String getDonationGroup() {
+        return donationGroup;
+    }
+
+    public void setDonationGroup(String donationGroup) {
+        this.donationGroup = donationGroup;
+    }
+
 
     // Update lifecycle methods
     @PrePersist

@@ -125,6 +125,21 @@ public class TransportServiceImpl implements TransportService {
     }
 
     @Override
+    public List<Transport> getTransportsBySourceDonationGroup(String donationGroup) {
+        return transportRepository.findBySourceBox_DonationGroup(donationGroup);
+    }
+
+    @Override
+    public List<Transport> getTransportsByDestinationDonationGroup(String donationGroup) {
+        return transportRepository.findByDestinationBox_DonationGroup(donationGroup);
+    }
+
+    @Override
+    public List<Transport> searchTransportsByDriverName(String driverName) {
+        return transportRepository.findByDriverNameContainingIgnoreCase(driverName);
+    }
+
+    @Override
     public Transport completeTransport(Long transportId, Date completionDate) {
         Transport transport = transportRepository.findById(transportId)
                 .orElseThrow(() -> new EntityNotFoundException("Transport not found with ID: " + transportId));

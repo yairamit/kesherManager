@@ -40,4 +40,8 @@ public interface TaskService {
 
     // Assign task to a person
     Task assignTask(Long taskId, String assignedTo);
+
+    List<Task> getTasksByDonationGroup(String donationGroup);
+    List<Task> getTasksByAssociationManager(String associationManager);
+    List<Task> getTasksByCategory(String category);
 }

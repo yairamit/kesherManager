@@ -49,6 +49,44 @@ public class Task {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
+    private String taskCategory;
+
+    // Add new getters and setters
+    public String getTaskCategory() {
+        return taskCategory;
+    }
+
+    public void setTaskCategory(String taskCategory) {
+        this.taskCategory = taskCategory;
+    }
+
+    // Add convenience method to get box's donation group when a task is related to a box
+    @Transient // Not stored in DB, calculated on demand
+    public String getRelatedDonationGroup() {
+        if (relatedBox != null) {
+            return relatedBox.getDonationGroup();
+        }
+        return null;
+    }
+
+    // Add convenience method to get box's responsible person when a task is related to a box
+    @Transient
+    public String getRelatedResponsiblePerson() {
+        if (relatedBox != null) {
+            return relatedBox.getResponsiblePerson();
+        }
+        return null;
+    }
+
+    // Add convenience method to get box's association manager when a task is related to a box
+    @Transient
+    public String getRelatedAssociationManager() {
+        if (relatedBox != null) {
+            return relatedBox.getAssociationManager();
+        }
+        return null;
+    }
+
     // Enums
     public enum TaskType {
         COLLECTION, TRANSPORT, MAINTENANCE, OTHER

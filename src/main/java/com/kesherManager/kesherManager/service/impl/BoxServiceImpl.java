@@ -92,4 +92,44 @@ public class BoxServiceImpl implements BoxService {
 
         return transportRepository.findByDestinationBox(box);
     }
+
+    @Override
+    public List<Box> searchBoxesByResponsiblePerson(String responsiblePerson) {
+        return boxRepository.findByResponsiblePersonContainingIgnoreCase(responsiblePerson);
+    }
+
+    @Override
+    public List<Box> searchBoxesByAssociationManager(String associationManager) {
+        return boxRepository.findByAssociationManagerContainingIgnoreCase(associationManager);
+    }
+
+    @Override
+    public List<Box> getBoxesByDonationGroup(String donationGroup) {
+        return boxRepository.findByDonationGroup(donationGroup);
+    }
+
+    @Override
+    public Box updateBoxDetails(Long boxId, Box boxDetails) {
+        Box box = boxRepository.findById(boxId)
+                .orElseThrow(() -> new EntityNotFoundException("Box not found with ID: " + boxId));
+
+        // Update all box fields from the details object
+        box.setLocationName(boxDetails.getLocationName());
+        box.setAddress(boxDetails.getAddress());
+        box.setLatitude(boxDetails.getLatitude());
+        box.setLongitude(boxDetails.getLongitude());
+        box.setStatus(boxDetails.getStatus());
+        box.setNotes(boxDetails.getNotes());
+
+        // Update new fields
+        box.setResponsiblePerson(boxDetails.getResponsiblePerson());
+        box.setResponsiblePersonPhone(boxDetails.getResponsiblePersonPhone());
+        box.setAssociationManager(boxDetails.getAssociationManager());
+        box.setDonationGroup(boxDetails.getDonationGroup());
+
+        // Update the timestamp
+        box.setUpdatedAt(Dates.nowUTC());
+
+        return boxRepository.save(box);
+    }
 }

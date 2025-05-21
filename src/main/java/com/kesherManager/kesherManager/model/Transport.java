@@ -66,6 +66,15 @@ public class Transport {
         PLANNED, IN_PROGRESS, COMPLETED, CANCELLED
     }
 
+
+    private String driverName;
+    private String driverPhone;
+
+
+
+
+
+
     // Constructors
 
     public Transport() {
@@ -205,6 +214,41 @@ public class Transport {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getDriverPhone() {
+        return driverPhone;
+    }
+
+    public void setDriverPhone(String driverPhone) {
+        this.driverPhone = driverPhone;
+    }
+
+    // Add convenience methods to access box-related information
+    @Transient
+    public String getSourceDonationGroup() {
+        if (sourceBox != null) {
+            return sourceBox.getDonationGroup();
+        }
+        return null;
+    }
+
+    @Transient
+    public String getDestinationDonationGroup() {
+        if (destinationBox != null && destinationType == DestinationType.BOX) {
+            return destinationBox.getDonationGroup();
+        }
+        return null;
+    }
+
+
 
     // Lifecycle methods
 

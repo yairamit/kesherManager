@@ -33,4 +33,8 @@ public interface TransportRepository extends JpaRepository<Transport, Long> {
 
     // Find transports for today (requires custom implementation or using between)
     List<Transport> findByScheduledDateBetweenAndStatus(Date startOfDay, Date endOfDay, Transport.TransportStatus status);
+
+    List<Transport> findBySourceBox_DonationGroup(String donationGroup);
+    List<Transport> findByDestinationBox_DonationGroup(String donationGroup);
+    List<Transport> findByDriverNameContainingIgnoreCase(String driverName);
 }

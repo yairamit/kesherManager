@@ -30,4 +30,10 @@ public interface BoxService {
     List<Transport> getOutgoingTransports(Long boxId);
 
     List<Transport> getIncomingTransports(Long boxId);
+
+    List<Box> searchBoxesByResponsiblePerson(String responsiblePerson);
+    List<Box> searchBoxesByAssociationManager(String associationManager);
+    List<Box> getBoxesByDonationGroup(String donationGroup);
+    Box updateBoxDetails(Long boxId, Box boxDetails);
+
 }

@@ -37,4 +37,9 @@ public interface TransportService {
 
     // Complete a transport
     Transport completeTransport(Long transportId, Date completionDate);
+
+    List<Transport> getTransportsBySourceDonationGroup(String donationGroup);
+    List<Transport> getTransportsByDestinationDonationGroup(String donationGroup);
+    List<Transport> searchTransportsByDriverName(String driverName);
+
 }

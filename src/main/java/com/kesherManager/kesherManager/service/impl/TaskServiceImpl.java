@@ -153,4 +153,19 @@ public class TaskServiceImpl implements TaskService {
 
         return taskRepository.findByDueDateBetween(startOfDay, endOfDay);
     }
+
+    @Override
+    public List<Task> getTasksByDonationGroup(String donationGroup) {
+        return taskRepository.findByRelatedBox_DonationGroup(donationGroup);
+    }
+
+    @Override
+    public List<Task> getTasksByAssociationManager(String associationManager) {
+        return taskRepository.findByRelatedBox_AssociationManager(associationManager);
+    }
+
+    @Override
+    public List<Task> getTasksByCategory(String category) {
+        return taskRepository.findByTaskCategory(category);
+    }
 }

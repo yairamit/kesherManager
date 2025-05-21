@@ -9,7 +9,14 @@ import java.util.List;
 @Repository
 public interface BoxRepository extends JpaRepository<Box, Long> {
     // Find boxes by status
+
+
     List<Box> findByStatus(Box.BoxStatus status);
+
+    // New methods for additional fields
+    List<Box> findByResponsiblePersonContainingIgnoreCase(String responsiblePerson);
+    List<Box> findByAssociationManagerContainingIgnoreCase(String associationManager);
+    List<Box> findByDonationGroup(String donationGroup);
 
     // Find boxes by location name (partial match, case insensitive)
     List<Box> findByLocationNameContainingIgnoreCase(String locationName);
