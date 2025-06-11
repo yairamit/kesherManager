@@ -2,7 +2,7 @@ package com.kesherManager.kesherManager.model;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import util.Dates;
+import com.kesherManager.kesherManager.util.Dates ;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,10 +38,10 @@ public class Transport {
     // Description of the quantity of food transported
     private String quantity;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date scheduledDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date completionDate;
 
     @Enumerated(EnumType.STRING)
@@ -51,10 +51,10 @@ public class Transport {
 
     private String createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date updatedAt;
 
     // Enums
@@ -89,15 +89,7 @@ public class Transport {
         this.updatedAt = Dates.nowUTC();
     }
 
-    // Add constructor that accepts Joda LocalDate
-    public Transport(Box sourceBox, DestinationType destinationType, LocalDate scheduledLocalDate) {
-        this.sourceBox = sourceBox;
-        this.destinationType = destinationType;
-        this.scheduledDate = Dates.atUtc(scheduledLocalDate);
-        this.status = TransportStatus.PLANNED;
-        this.createdAt = Dates.nowUTC();
-        this.updatedAt = Dates.nowUTC();
-    }
+
 
 
 
@@ -151,13 +143,7 @@ public class Transport {
         this.destinationName = destinationName;
     }
 
-    public String getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
 
     public Date getScheduledDate() {
         return scheduledDate;
@@ -250,49 +236,7 @@ public class Transport {
 
 
 
-    // Lifecycle methods
 
-    public void setScheduledDate(LocalDate scheduledLocalDate) {
-        this.scheduledDate = Dates.atUtc(scheduledLocalDate);
-    }
 
-    public void setScheduledDate(LocalDateTime scheduledLocalDateTime) {
-        this.scheduledDate = Dates.atUtc(scheduledLocalDateTime);
-    }
 
-    public void setCompletionDate(LocalDate completionLocalDate) {
-        this.completionDate = Dates.atUtc(completionLocalDate);
-    }
-
-    public void setCompletionDate(LocalDateTime completionLocalDateTime) {
-        this.completionDate = Dates.atUtc(completionLocalDateTime);
-    }
-
-    // Update lifecycle methods
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Dates.nowUTC();
-        updatedAt = Dates.nowUTC();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = Dates.nowUTC();
-    }
-
-    // Update helper methods
-    public boolean isCompleted() {
-        return status == TransportStatus.COMPLETED;
-    }
-
-    // Add extra helper for date check
-    public boolean isScheduledForToday() {
-        if (scheduledDate == null) return false;
-
-        LocalDate today = LocalDate.now();
-        LocalDateTime scheduledLocalDateTime = Dates.atLocalTime(scheduledDate);
-
-        return scheduledLocalDateTime != null &&
-                scheduledLocalDateTime.toLocalDate().equals(today);
-    }
 }

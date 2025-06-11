@@ -9,7 +9,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import util.Dates;
+import com.kesherManager.kesherManager.util.Dates ;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;

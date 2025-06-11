@@ -113,7 +113,7 @@ public class TransportController {
                 transport.setDestinationName(transportDetails.getDestinationName());
             }
 
-            transport.setQuantity(transportDetails.getQuantity());
+
             transport.setScheduledDate(transportDetails.getScheduledDate());
             transport.setCompletionDate(transportDetails.getCompletionDate());
             transport.setStatus(transportDetails.getStatus());

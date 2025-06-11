@@ -1,9 +1,12 @@
 package com.kesherManager.kesherManager.model;
 
-import util.Dates;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kesherManager.kesherManager.util.Dates;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,18 +42,21 @@ public class Box {
     private String notes;
 
     // List of outgoing transports from this box
-    @OneToMany(mappedBy = "sourceBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Transport> outgoingTransports = new ArrayList<>();
+   // @OneToMany(mappedBy = "sourceBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   // private List<Transport> outgoingTransports = new ArrayList<>();
 
     // List of incoming transports to this box
-    @OneToMany(mappedBy = "destinationBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Transport> incomingTransports = new ArrayList<>();
+   // @OneToMany(mappedBy = "destinationBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private List<Transport> incomingTransports = new ArrayList<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
+    @Column(name = "created_at")
     private Date createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
+    @Column(name = "updated_at")
     private Date updatedAt;
+
+
 
     // Enum for box status
     public enum BoxStatus {
@@ -143,7 +149,7 @@ public class Box {
         this.notes = notes;
     }
 
-    public List<Transport> getOutgoingTransports() {
+    /*public List<Transport> getOutgoingTransports() {
         return outgoingTransports;
     }
 
@@ -157,7 +163,7 @@ public class Box {
 
     public void setIncomingTransports(List<Transport> incomingTransports) {
         this.incomingTransports = incomingTransports;
-    }
+    }*/
 
     public Date getCreatedAt() {
         return createdAt;
@@ -176,20 +182,22 @@ public class Box {
     }
 
 
+   /* @JsonProperty("createdAt")
+    public org.joda.time.LocalDateTime getCreatedAtLocal() {
+        if (this.createdAt == null) {
+            return null;
+        }
+        return Dates.atLocalTime(this.createdAt);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @JsonProperty("updatedAt")
+    public org.joda.time.LocalDateTime getUpdatedAtLocal() {
+        if (this.updatedAt == null) {
+            return null;
+        }
+        return Dates.atLocalTime(this.updatedAt);
+    }
+*/
 
     public String getResponsiblePerson() {
         return responsiblePerson;
@@ -222,18 +230,6 @@ public class Box {
     public void setDonationGroup(String donationGroup) {
         this.donationGroup = donationGroup;
     }
-
-
-    // Update lifecycle methods
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Dates.nowUTC();
-        updatedAt = Dates.nowUTC();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = Dates.nowUTC();
-    }
-
 }
+
+

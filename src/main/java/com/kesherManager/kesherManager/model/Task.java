@@ -2,7 +2,7 @@ package com.kesherManager.kesherManager.model;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import util.Dates;
+import com.kesherManager.kesherManager.util.Dates ;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -32,7 +32,7 @@ public class Task {
 
     private String assignedTo;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date dueDate;
 
     @Enumerated(EnumType.STRING)
@@ -43,10 +43,10 @@ public class Task {
 
     private String notes;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date updatedAt;
 
     private String taskCategory;
@@ -116,15 +116,7 @@ public class Task {
     }
 
     // Add constructor that accepts Joda LocalDate
-    public Task(TaskType taskType, String description, LocalDate dueDateLocal, TaskPriority priority) {
-        this.taskType = taskType;
-        this.description = description;
-        this.dueDate = Dates.atUtc(dueDateLocal);
-        this.priority = priority;
-        this.status = TaskStatus.PENDING;
-        this.createdAt = Dates.nowUTC();
-        this.updatedAt = Dates.nowUTC();
-    }
+
     // Getters and Setters
 
     public Long getId() {
@@ -223,31 +215,10 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    public void setDueDate(LocalDate dueDateLocal) {
-        this.dueDate = Dates.atUtc(dueDateLocal);
-    }
 
-    public void setDueDate(LocalDateTime dueDateLocalTime) {
-        this.dueDate = Dates.atUtc(dueDateLocalTime);
-    }
 
-    public LocalDate getDueDateLocal() {
-        if (dueDate == null) return null;
-        LocalDateTime dateTime = Dates.atLocalTime(dueDate);
-        return dateTime != null ? dateTime.toLocalDate() : null;
-    }
 
-    // Update lifecycle methods
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Dates.nowUTC();
-        updatedAt = Dates.nowUTC();
-    }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = Dates.nowUTC();
-    }
 
     // Update helper methods
     public boolean isOverdue() {
