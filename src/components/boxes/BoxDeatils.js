@@ -131,7 +131,7 @@ function BoxDetails({ boxId, onEdit, onClose }) {
       {/* Header with box name and status */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5" component="h2">
-          {box.locationName}
+          {box.donationGroup}
         </Typography>
         <Chip 
           label={getStatusText(box.status)} 
@@ -221,7 +221,7 @@ function BoxDetails({ boxId, onEdit, onClose }) {
                       <ListItemText
                         primary={
                           transport.destinationType === 'BOX' && transport.destinationBox
-                            ? `ל${transport.destinationBox.locationName}`
+                            ? `ל${transport.destinationBox.donationGroup}`
                             : `ל${transport.destinationName || 'יעד לא ידוע'}`
                         }
                         secondary={`תאריך: ${formatDate(transport.scheduledDate)} | סטטוס: ${transport.status}`}
@@ -252,7 +252,7 @@ function BoxDetails({ boxId, onEdit, onClose }) {
                         <LocalShippingIcon />
                       </ListItemIcon>
                       <ListItemText
-                        primary={`מ${transport.sourceBox ? transport.sourceBox.locationName : 'מקור לא ידוע'}`}
+                        primary={`מ${transport.sourceBox ? transport.sourceBox.donationGroup : 'מקור לא ידוע'}`}
                         secondary={`תאריך: ${formatDate(transport.scheduledDate)} | סטטוס: ${transport.status}`}
                       />
                     </ListItem>

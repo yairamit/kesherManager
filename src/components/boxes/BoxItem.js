@@ -62,7 +62,7 @@ function BoxItem({ box, onEdit, onDelete }) {
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
           <Typography variant="h6" component="h2">
-            {box.locationName}
+            {box.donationGroup}
           </Typography>
           <Chip 
             label={getStatusText(box.status)} 

@@ -32,18 +32,18 @@ function BoxForm({ open, onClose, onSubmit, formData, onChange, currentBox }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        {currentBox ? `עריכת ארגז: ${currentBox.locationName}` : 'הוספת ארגז חדש'}
+        {currentBox ? `עריכת ארגז: ${currentBox.donationGroup}` : 'הוספת ארגז חדש'}
       </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
-          name="locationName"
+          name="donationGroup"
           label="שם מיקום"
           type="text"
           fullWidth
           variant="outlined"
-          value={formData.locationName}
+          value={formData.donationGroup}
           onChange={handleInputChange}
           required
           sx={{ mb: 2, mt: 1 }}
@@ -91,7 +91,7 @@ function BoxForm({ open, onClose, onSubmit, formData, onChange, currentBox }) {
           onClick={onSubmit} 
           variant="contained" 
           color="primary"
-          disabled={!formData.locationName}
+          disabled={!formData.donationGroup}
         >
           שמור
         </Button>

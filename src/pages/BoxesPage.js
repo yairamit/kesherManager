@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Typography, 
-  Button, 
-  Box, 
-  Grid, 
-  Card, 
-  CardContent, 
-  CardActions,
+import {
+  Typography,
+  Button,
+  Box,
   Chip,
   TextField,
   InputAdornment,
@@ -21,7 +17,14 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -36,33 +39,21 @@ function BoxesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [currentBox, setCurrentBox] = useState(null);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success'
-  });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Initial form state
-  const initialFormState = {
-    locationName: '',
-    address: '',
-    status: 'ACTIVE',
-    notes: ''
-  };
-  
+  const initialFormState = { responsiblePerson: '', donationGroup: '', address: '', status: 'ACTIVE', notes: '' };
   const [formData, setFormData] = useState(initialFormState);
 
-  // Load boxes on component mount
   useEffect(() => {
     fetchBoxes();
   }, []);
 
-  // Fetch boxes from the API
   const fetchBoxes = async () => {
     try {
       setLoading(true);
       const data = await boxService.getAllBoxes();
-      setBoxes(data);
+      const fixed = data.map(box => ({ ...box, donationGroup: box.donationGroup ?? '' }));
+      setBoxes(fixed);
     } catch (error) {
       console.error('Error fetching boxes:', error);
       showSnackbar('שגיאה בטעינת ארגזים', 'error');
@@ -71,33 +62,27 @@ function BoxesPage() {
     }
   };
 
-  // Filter boxes based on search term
-  const filteredBoxes = boxes.filter(box => 
-    box.locationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredBoxes = boxes.filter(box =>
+    box.donationGroup.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (box.address && box.address.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Handle form field changes
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Open dialog for adding a new box
   const handleAddBox = () => {
     setCurrentBox(null);
     setFormData(initialFormState);
     setOpenDialog(true);
   };
 
-  // Open dialog for editing an existing box
-  const handleEditBox = (box) => {
+  const handleEditBox = box => {
     setCurrentBox(box);
     setFormData({
-      locationName: box.locationName,
+      responsiblePerson: box.responsiblePerson,
+      donationGroup: box.donationGroup,
       address: box.address || '',
       status: box.status,
       notes: box.notes || ''
@@ -105,33 +90,29 @@ function BoxesPage() {
     setOpenDialog(true);
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     try {
       if (currentBox) {
-        // Update existing box
         await boxService.updateBox(currentBox.id, formData);
         showSnackbar('הארגז עודכן בהצלחה');
       } else {
-        // Create new box
         await boxService.createBox(formData);
         showSnackbar('הארגז נוצר בהצלחה');
       }
       setOpenDialog(false);
-      fetchBoxes(); // Refresh the list
+      fetchBoxes();
     } catch (error) {
       console.error('Error saving box:', error);
       showSnackbar('שגיאה בשמירת הארגז', 'error');
     }
   };
 
-  // Handle box deletion
-  const handleDeleteBox = async (boxId) => {
+  const handleDeleteBox = async boxId => {
     if (window.confirm('האם אתה בטוח שברצונך למחוק ארגז זה?')) {
       try {
         await boxService.deleteBox(boxId);
         showSnackbar('הארגז נמחק בהצלחה');
-        fetchBoxes(); // Refresh the list
+        fetchBoxes();
       } catch (error) {
         console.error('Error deleting box:', error);
         showSnackbar('שגיאה במחיקת הארגז', 'error');
@@ -139,66 +120,39 @@ function BoxesPage() {
     }
   };
 
-  // Show snackbar notification
   const showSnackbar = (message, severity = 'success') => {
-    setSnackbar({
-      open: true,
-      message,
-      severity
-    });
+    setSnackbar({ open: true, message, severity });
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({
-      ...prev,
-      open: false
-    }));
+    setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Get color for status chip
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
-      case 'ACTIVE':
-        return 'success';
-      case 'MAINTENANCE':
-        return 'warning';
-      case 'INACTIVE':
-        return 'error';
-      default:
-        return 'default';
+      case 'ACTIVE': return 'success';
+      case 'MAINTENANCE': return 'warning';
+      case 'INACTIVE': return 'error';
+      default: return 'default';
     }
   };
 
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1">
-          ניהול ארגזים
-        </Typography>
-        <Button 
-          variant="contained" 
-          color="secondary" 
-          startIcon={<AddIcon />}
-          onClick={handleAddBox}
-        >
+        <Typography variant="h4">ניהול ארגזים</Typography>
+        <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleAddBox}>
           הוסף ארגז חדש
         </Button>
       </Box>
-      
+
       <TextField
         fullWidth
         margin="normal"
-        placeholder="חיפוש לפי שם מיקום או כתובת..."
+        placeholder="חיפוש לפי קבוצה או כתובת..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
+        onChange={e => setSearchTerm(e.target.value)}
+        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> }}
         sx={{ mb: 3 }}
       />
 
@@ -207,155 +161,68 @@ function BoxesPage() {
           <CircularProgress />
         </Box>
       ) : (
-        <Grid container spacing={3}>
-          {filteredBoxes.length > 0 ? (
-            filteredBoxes.map((box) => (
-              <Grid item xs={12} sm={6} md={4} key={box.id}>
-                <Card 
-                  sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    bgcolor: box.status === 'INACTIVE' ? 'rgba(0,0,0,0.05)' : 'white' 
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="h6" component="h2">
-                        {box.locationName}
-                      </Typography>
-                      <Chip 
-                        label={box.status === 'ACTIVE' ? 'פעיל' : box.status === 'MAINTENANCE' ? 'בתחזוקה' : 'לא פעיל'} 
-                        color={getStatusColor(box.status)}
-                        size="small"
-                      />
-                    </Box>
-                    {box.address && (
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        כתובת: {box.address}
-                      </Typography>
-                    )}
-                    {box.notes && (
-                      <Typography variant="body2" sx={{ mt: 1 }}>
-                        הערות: {box.notes}
-                      </Typography>
-                    )}
-                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 2 }}>
-                      עודכן בתאריך: {formatDate(box.updatedAt)}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button 
-                      size="small" 
-                      startIcon={<EditIcon />}
-                      onClick={() => handleEditBox(box)}
-                    >
-                      ערוך
-                    </Button>
-                    <IconButton 
-                      color="error" 
-                      size="small"
-                      onClick={() => handleDeleteBox(box.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Typography variant="body1" align="center">
-                לא נמצאו ארגזים מתאימים לחיפוש
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
+        <TableContainer component={Paper} sx={{ mb: 3 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                 <TableCell>אחראי ארגז</TableCell>
+                <TableCell>מעגל נתינה</TableCell>
+                <TableCell>כתובת</TableCell>
+                <TableCell>סטטוס</TableCell>
+                <TableCell>עודכן בתאריך</TableCell>
+                <TableCell align="center">פעולות</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredBoxes.map(box => (
+                <TableRow key={box.id} sx={{ bgcolor: box.status === 'INACTIVE' ? 'rgba(0,0,0,0.05)' : 'inherit' }}>   
+                  <TableCell>{box.responsiblePerson}</TableCell>
+                  <TableCell>{box.donationGroup}</TableCell>
+                  <TableCell>{box.address}</TableCell>
+
+                  <TableCell>
+                    <Chip
+                      label={box.status === 'ACTIVE' ? 'פעיל' : box.status === 'MAINTENANCE' ? 'בתחזוקה' : 'לא פעיל'}
+                      color={getStatusColor(box.status)} size="small"/>
+                  </TableCell>
+                  <TableCell>{formatDate(box.updatedAt)}</TableCell>
+                  <TableCell align="center">
+                    <IconButton size="small" onClick={() => handleEditBox(box)}><EditIcon /></IconButton>
+                    <IconButton size="small" color="error" onClick={() => handleDeleteBox(box.id)}><DeleteIcon /></IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
 
       {/* Add/Edit Box Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {currentBox ? `עריכת ארגז: ${currentBox.locationName}` : 'הוספת ארגז חדש'}
-        </DialogTitle>
+        <DialogTitle>{currentBox ? `עריכת ארגז: ${currentBox.donationGroup}` : 'הוספת ארגז חדש'}</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="locationName"
-            label="שם מיקום"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formData.locationName}
-            onChange={handleInputChange}
-            required
-            sx={{ mb: 2, mt: 1 }}
-          />
-          <TextField
-            margin="dense"
-            name="address"
-            label="כתובת"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formData.address}
-            onChange={handleInputChange}
-            sx={{ mb: 2 }}
-          />
+           <TextField autoFocus margin="dense" name="responsiblePerson" label="אחראי ארגז" type="text" fullWidth variant="outlined" value={formData.responsiblePerson} onChange={handleInputChange} required sx={{ mb: 2, mt: 1 }} />
+           <TextField autoFocus margin="dense" name="donationGroup" label="שם מיקום" type="text" fullWidth variant="outlined" value={formData.donationGroup} onChange={handleInputChange} required sx={{ mb: 2, mt: 1 }} />
+          <TextField margin="dense" name="address" label="כתובת" type="text" fullWidth variant="outlined" value={formData.address} onChange={handleInputChange} sx={{ mb: 2 }} />
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>סטטוס</InputLabel>
-            <Select
-              name="status"
-              value={formData.status}
-              label="סטטוס"
-              onChange={handleInputChange}
-            >
+            <Select name="status" value={formData.status} label="סטטוס" onChange={handleInputChange}>
               <MenuItem value="ACTIVE">פעיל</MenuItem>
               <MenuItem value="MAINTENANCE">בתחזוקה</MenuItem>
               <MenuItem value="INACTIVE">לא פעיל</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            margin="dense"
-            name="notes"
-            label="הערות"
-            type="text"
-            fullWidth
-            variant="outlined"
-            multiline
-            rows={3}
-            value={formData.notes}
-            onChange={handleInputChange}
-          />
+          <TextField margin="dense" name="notes" label="הערות" type="text" fullWidth variant="outlined" multiline rows={3} value={formData.notes} onChange={handleInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>ביטול</Button>
-          <Button 
-            onClick={handleSubmit} 
-            variant="contained" 
-            color="primary"
-            disabled={!formData.locationName}
-          >
-            שמור
-          </Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary" disabled={!formData.donationGroup}>שמור</Button>
         </DialogActions>
       </Dialog>
 
       {/* Snackbar for notifications */}
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbar.severity} 
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
       </Snackbar>
     </Box>
   );
