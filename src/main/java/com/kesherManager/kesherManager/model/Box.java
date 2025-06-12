@@ -1,15 +1,8 @@
 package com.kesherManager.kesherManager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kesherManager.kesherManager.util.Dates;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "boxes")
@@ -19,8 +12,7 @@ public class Box {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Location name cannot be empty")
-    private String locationName;
+
 
     private String responsiblePerson;
 
@@ -30,16 +22,24 @@ public class Box {
 
     private String donationGroup;
 
+    private String familyName;
+    private String city;
     private String address;
 
     private Double latitude;
 
     private Double longitude;
 
+
+
     @Enumerated(EnumType.STRING)
     private BoxStatus status;
 
     private String notes;
+
+    private String DeliveryVolunteer;
+
+    private String DeliveryVolunteerPhone;
 
     // List of outgoing transports from this box
    // @OneToMany(mappedBy = "sourceBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -49,14 +49,45 @@ public class Box {
    // @OneToMany(mappedBy = "destinationBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     //private List<Transport> incomingTransports = new ArrayList<>();
 
-    @JsonIgnore
-    @Column(name = "created_at")
+
     private Date createdAt;
-    @JsonIgnore
-    @Column(name = "updated_at")
+
     private Date updatedAt;
 
+    public String getDeliveryVolunteerPhone() {
+        return DeliveryVolunteerPhone;
+    }
 
+    public void setDeliveryVolunteerPhone(String deliveryVolunteerPhone) {
+        DeliveryVolunteerPhone = deliveryVolunteerPhone;
+    }
+
+    public String getDeliveryVolunteer() {
+        return DeliveryVolunteer;
+    }
+
+    public void setDeliveryVolunteer(String deliveryVolunteer) {
+        DeliveryVolunteer = deliveryVolunteer;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+
+    public String boxType;
 
     // Enum for box status
     public enum BoxStatus {
@@ -64,29 +95,27 @@ public class Box {
     }
 
     // Constructors
+
+
+
     public Box() {
+        ;
     }
 
-    public Box(String locationName, String address) {
-        this.locationName = locationName;
-        this.address = address;
-        this.status = BoxStatus.ACTIVE;
-        this.createdAt = Dates.nowUTC();
-        this.updatedAt = Dates.nowUTC();
-    }
-
-    // Updated constructor with new fields
-    public Box(String locationName, String address, String responsiblePerson,
-               String responsiblePersonPhone, String associationManager, String donationGroup) {
-        this.locationName = locationName;
-        this.address = address;
-        this.responsiblePerson = responsiblePerson;
+    public Box( String address, String responsiblePerson,
+               String responsiblePersonPhone, String associationManager, String donationGroup, String familyName, Date updatedAt, String city, BoxStatus status, String boxType, String DeliveryVolunteer, String DeliveryVolunteerPhone) {
+         this.responsiblePerson = responsiblePerson;
         this.responsiblePersonPhone = responsiblePersonPhone;
         this.associationManager = associationManager;
         this.donationGroup = donationGroup;
+        this.familyName = familyName;
+        this.boxType = boxType;
         this.status = BoxStatus.ACTIVE;
-        this.createdAt = Dates.nowUTC();
-        this.updatedAt = Dates.nowUTC();
+        this.updatedAt = updatedAt;
+        this.address = address;
+        this.city = city;
+        this.DeliveryVolunteer = DeliveryVolunteer;
+        this.DeliveryVolunteerPhone = DeliveryVolunteerPhone;
     }
 
 
@@ -101,13 +130,6 @@ public class Box {
         this.id = id;
     }
 
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
 
     public String getAddress() {
         return address;
@@ -147,6 +169,14 @@ public class Box {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getBoxType() {
+        return boxType;
+    }
+
+    public void setBoxType(String boxType) {
+        this.boxType = boxType;
     }
 
     /*public List<Transport> getOutgoingTransports() {

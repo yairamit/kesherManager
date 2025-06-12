@@ -19,7 +19,6 @@ public interface BoxService {
     // Custom operations
     List<Box> getBoxesByStatus(Box.BoxStatus status);
 
-    List<Box> searchBoxesByLocationName(String locationName);
 
     List<Box> searchBoxesByAddress(String address);
 

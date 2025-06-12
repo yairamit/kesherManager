@@ -18,9 +18,6 @@ public interface BoxRepository extends JpaRepository<Box, Long> {
     List<Box> findByAssociationManagerContainingIgnoreCase(String associationManager);
     List<Box> findByDonationGroup(String donationGroup);
 
-    // Find boxes by location name (partial match, case insensitive)
-    List<Box> findByLocationNameContainingIgnoreCase(String locationName);
-
     // Find boxes by address (partial match, case insensitive)
     List<Box> findByAddressContainingIgnoreCase(String address);
 }

@@ -56,10 +56,7 @@ public class BoxServiceImpl implements BoxService {
         return boxRepository.findByStatus(status);
     }
 
-    @Override
-    public List<Box> searchBoxesByLocationName(String locationName) {
-        return boxRepository.findByLocationNameContainingIgnoreCase(locationName);
-    }
+
 
     @Override
     public List<Box> searchBoxesByAddress(String address) {
@@ -114,7 +111,7 @@ public class BoxServiceImpl implements BoxService {
                 .orElseThrow(() -> new EntityNotFoundException("Box not found with ID: " + boxId));
 
         // Update all box fields from the details object
-        box.setLocationName(boxDetails.getLocationName());
+        box.setDonationGroup(boxDetails.getDonationGroup());
         box.setAddress(boxDetails.getAddress());
         box.setLatitude(boxDetails.getLatitude());
         box.setLongitude(boxDetails.getLongitude());

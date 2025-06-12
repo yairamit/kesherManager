@@ -57,7 +57,7 @@ public class BoxController {
             Box box = existingBox.get();
 
             // Update the existing box with new details
-            box.setLocationName(boxDetails.getLocationName());
+            box.setDonationGroup(boxDetails.getDonationGroup());
             box.setAddress(boxDetails.getAddress());
             box.setLatitude(boxDetails.getLatitude());
             box.setLongitude(boxDetails.getLongitude());
@@ -132,14 +132,13 @@ public class BoxController {
     @GetMapping("/search")
     @Operation(summary = "Search boxes", description = "Search boxes by location name or address")
     public ResponseEntity<List<Box>> searchBoxes(
-            @RequestParam(required = false) String locationName,
+            @RequestParam(required = false) String donationGroup,
             @RequestParam(required = false) String address) {
 
         List<Box> boxes;
 
-        if (locationName != null && !locationName.isEmpty()) {
-            boxes = boxService.searchBoxesByLocationName(locationName);
-        } else if (address != null && !address.isEmpty()) {
+
+        if (address != null && !address.isEmpty()) {
             boxes = boxService.searchBoxesByAddress(address);
         } else {
             boxes = boxService.getAllBoxes();
@@ -173,11 +172,10 @@ public class BoxController {
     @GetMapping("/advanced-search")
     @Operation(summary = "Advanced box search", description = "Search boxes using multiple criteria")
     public ResponseEntity<List<Box>> advancedSearch(
-            @RequestParam(required = false) String locationName,
+            @RequestParam(required = false) String donationGroup,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String responsiblePerson,
             @RequestParam(required = false) String associationManager,
-            @RequestParam(required = false) String donationGroup,
             @RequestParam(required = false) Box.BoxStatus status) {
 
         // This is a simplified implementation. In a real-world scenario,
@@ -186,9 +184,7 @@ public class BoxController {
 
         List<Box> boxes;
 
-        if (locationName != null && !locationName.isEmpty()) {
-            boxes = boxService.searchBoxesByLocationName(locationName);
-        } else if (address != null && !address.isEmpty()) {
+        if (address != null && !address.isEmpty()) {
             boxes = boxService.searchBoxesByAddress(address);
         } else if (responsiblePerson != null && !responsiblePerson.isEmpty()) {
             boxes = boxService.searchBoxesByResponsiblePerson(responsiblePerson);

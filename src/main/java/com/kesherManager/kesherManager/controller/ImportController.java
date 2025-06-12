@@ -54,11 +54,10 @@ public class ImportController {
                     Box box = new Box();
 
                     // Set fields from the JSON data
-                    if (boxData.containsKey("locationName")) {
-                        box.setLocationName((String) boxData.get("locationName"));
-                    } else {
-                        throw new IllegalArgumentException("Location name is required");
+                    if (boxData.containsKey("city")) {
+                        box.setAddress((String) boxData.get("city"));
                     }
+
 
                     if (boxData.containsKey("address")) {
                         box.setAddress((String) boxData.get("address"));
@@ -160,10 +159,8 @@ public class ImportController {
                 Box box = new Box();
 
                 // Set fields from the JSON data (same as above)
-                if (boxData.containsKey("locationName")) {
-                    box.setLocationName((String) boxData.get("locationName"));
-                } else {
-                    throw new IllegalArgumentException("Location name is required");
+                if (boxData.containsKey("city")) {
+                    box.setCity((String) boxData.get("city"));
                 }
 
                 if (boxData.containsKey("address")) {
