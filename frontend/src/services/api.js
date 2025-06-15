@@ -2,6 +2,8 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://keshermanager.onrender.com'; // Adjust this to match your Spring Boot server
 
+console.log('API Base URL:', API_BASE_URL);
+
 // Create an axios instance with default config
 const api = axios.create({
   baseURL: API_BASE_URL,

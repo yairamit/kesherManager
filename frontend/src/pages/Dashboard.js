@@ -27,6 +27,7 @@ import boxService from '../services/boxService';
 import taskService from '../services/taskService';
 import transportService from '../services/transportService';
 import { formatDate, isToday } from '../utils/dateUtils';
+import api from '../services/api';
 
 function Dashboard() {
   const [boxCount, setBoxCount] = useState({ total: 0, active: 0, maintenance: 0, inactive: 0 });
@@ -422,5 +423,7 @@ setTaskCount({
     </Box>
   );
 }
+console.log("📡 final baseURL:", api.defaults.baseURL);
+  
 
 export default Dashboard;
